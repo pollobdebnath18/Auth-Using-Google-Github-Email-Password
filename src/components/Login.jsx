@@ -1,16 +1,66 @@
 import React from "react";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  GithubAuthProvider,
+} from "firebase/auth";
+import { auth } from "../firebase/firebase.config";
 
 const Login = () => {
+  const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
+  //Login with Email/Password
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    console.log(email, password);
+  };
+  //login with Google
+  const handleLoginWithGoogle = () => {
+    console.log("clicked Google ");
+
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        console.log(result.user);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
+  //Login with Github
+  const handleLoginWithGithub = () => {
+    console.log("clicked github");
+
+    signInWithPopup(auth, githubProvider)
+      .then((result) => {
+        console.llog(result.user);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
   return (
     <div className="flex justify-center mt-7">
       <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
         <div className="card-body">
           <h1 className="text-5xl font-bold">Login now!</h1>
-          <form className="fieldset">
+          <form onSubmit={handleLogin} className="fieldset">
             <label className="label">Email</label>
-            <input type="email" className="input" placeholder="Email" /> <br />
+            <input
+              type="email"
+              name="email"
+              className="input"
+              placeholder="Email"
+            />{" "}
+            <br />
             <label className="label">Password</label>
-            <input type="password" className="input" placeholder="Password" />
+            <input
+              type="password"
+              name="password"
+              className="input"
+              placeholder="Password"
+            />
             <div>
               <a className="link link-hover">Forgot password?</a>
             </div>
@@ -18,10 +68,16 @@ const Login = () => {
           </form>
           <div className="divider">OR</div>
           <div className="flex gap-10">
-            <button className="btn btn-active btn-primary">
+            <button
+              className="btn btn-active btn-primary"
+              onClick={handleLoginWithGoogle}
+            >
               Login With Google
             </button>
-            <button className="btn btn-active btn-primary">
+            <button
+              className="btn btn-active btn-primary"
+              onClick={handleLoginWithGithub}
+            >
               Login With Github
             </button>
           </div>
