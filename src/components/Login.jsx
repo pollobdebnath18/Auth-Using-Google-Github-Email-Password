@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -9,6 +9,7 @@ import { auth } from "../firebase/firebase.config";
 const Login = () => {
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
+  const [user, setUser] = useState(null);
   //Login with Email/Password
   const handleLogin = (e) => {
     e.preventDefault();
@@ -23,6 +24,7 @@ const Login = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
         console.log(result.user);
+        setUser(result.user);
       })
       .catch((error) => {
         console.log(error.message);
@@ -34,52 +36,70 @@ const Login = () => {
 
     signInWithPopup(auth, githubProvider)
       .then((result) => {
-        console.llog(result.user);
+        console.log(result.user);
+        setUser(result.user);
       })
       .catch((error) => {
         console.log(error.message);
       });
   };
   return (
-    <div className="flex justify-center mt-7">
-      <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-        <div className="card-body">
-          <h1 className="text-5xl font-bold">Login now!</h1>
-          <form onSubmit={handleLogin} className="fieldset">
-            <label className="label">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="input"
-              placeholder="Email"
-            />{" "}
-            <br />
-            <label className="label">Password</label>
-            <input
-              type="password"
-              name="password"
-              className="input"
-              placeholder="Password"
-            />
-            <div>
-              <a className="link link-hover">Forgot password?</a>
+    <div>
+      <div className="flex justify-center mt-7">
+        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+          <div className="card-body">
+            <h1 className="text-5xl font-bold">Login now!</h1>
+            <form onSubmit={handleLogin} className="fieldset">
+              <label className="label">Email</label>
+              <input
+                type="email"
+                name="email"
+                className="input"
+                placeholder="Email"
+              />{" "}
+              <br />
+              <label className="label">Password</label>
+              <input
+                type="password"
+                name="password"
+                className="input"
+                placeholder="Password"
+              />
+              <div>
+                <a className="link link-hover">Forgot password?</a>
+              </div>
+              <button className="btn btn-neutral mt-4">Login</button>
+            </form>
+            <div className="divider">OR</div>
+            <div className="flex gap-10">
+              <button
+                className="btn btn-active btn-primary"
+                onClick={handleLoginWithGoogle}
+              >
+                Login With Google
+              </button>
+              <button
+                className="btn btn-active btn-primary"
+                onClick={handleLoginWithGithub}
+              >
+                Login With Github
+              </button>
             </div>
-            <button className="btn btn-neutral mt-4">Login</button>
-          </form>
-          <div className="divider">OR</div>
-          <div className="flex gap-10">
-            <button
-              className="btn btn-active btn-primary"
-              onClick={handleLoginWithGoogle}
-            >
-              Login With Google
-            </button>
-            <button
-              className="btn btn-active btn-primary"
-              onClick={handleLoginWithGithub}
-            >
-              Login With Github
-            </button>
+            {user && (
+              <div className="mt-5 p-5  flex flex-col items-center gap-3">
+                <img
+                  src={user.photoURL}
+                  alt="profile"
+                  width={100}
+                  height={100}
+                />
+                {/* User Info */}
+                <h3>Name: {user.displayName}</h3>
+                <h2>Email: {user.email}</h2>
+                <h3>Last Sign In: {user.metadata.lastSignInTime}</h3>
+                <h3>Account Created: {user.metadata.creationTime}</h3>
+              </div>
+            )}
           </div>
         </div>
       </div>
