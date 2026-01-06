@@ -1,15 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithPopup,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 
 const Register = () => {
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  //Sign up using Email & Password
+  const handleWithEmailAndPassword = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    console.log(email, password);
+
+    success(false);
+    errorMessage("");
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        console.log(result.user);
+        setSuccess(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage(error.message);
+      });
+  };
   //Login with Google
   const handleSignInGoogle = () => {
     signInWithPopup(auth, googleProvider)
@@ -37,13 +60,23 @@ const Register = () => {
       <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
         <div className="card-body">
           <h1 className="text-5xl font-bold">Register now!</h1>
-          <form className="fieldset">
+          <form onSubmit={handleWithEmailAndPassword} className="fieldset">
             <label className="label">Name</label>
-            <input type="email" className="input" placeholder="Name" />
+            <input name="name" className="input" placeholder="Name" />
             <label className="label">Email</label>
-            <input type="email" className="input" placeholder="Email" />
+            <input
+              type="email"
+              name="email"
+              className="input"
+              placeholder="Email"
+            />
             <label className="label">Password</label>
-            <input type="password" className="input" placeholder="Password" />
+            <input
+              type="password"
+              name="password"
+              className="input"
+              placeholder="Password"
+            />
             <div>
               <a className="link link-hover">Forgot password?</a>
             </div>

@@ -7,13 +7,11 @@ import { auth } from '../../firebase/firebase.config'
 const Navigation = () => {
   const [user, setUser] = useState(null);
 
-  // Listen for auth changes
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       setUser(currentUser);
     });
-
-    // Cleanup listener on unmount
     return () => unsubscribe();
   }, []);
 
