@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import { Link } from "react-router";
+import Swal from "sweetalert2";
+
 import {
   GoogleAuthProvider,
   signInWithPopup,
   GithubAuthProvider,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 
@@ -11,6 +15,8 @@ const Login = () => {
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   //Login with Email/Password
   const handleLogIn = (e) => {
     e.preventDefault();
@@ -18,15 +24,43 @@ const Login = () => {
     const password = e.target.password.value;
     console.log(email, password);
 
-    signInWithEmailAndPassword(auth,email,password)
-    .then(result=>{
-      console.log(result.user);
-      setUser(result.user);
-    })
-    .catch(error=>{
-      console.log(error.message);
-    })
+    if (!email || !password) {
+      return;
+    }
+
+    setLoading(true);
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        console.log(result.user);
+        setUser(result.user);
+        setLoading(false);
+        // If user Logged in then Show alert message
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Login Successful",
+          showConfirmButton: false,
+          text: `Welcome back, ${result.user.displayName || "user"}`,
+          timer: 1500,
+        });
+      })
+      .catch((error) => {
+        console.log(error.message);
+        setLoading(false);
+
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Login Failed",
+          text: error.message,
+          timer: 1500,
+        });
+      });
   };
+
+  
+
   //login with Google
   const handleLoginWithGoogle = () => {
     console.log("clicked Google ");
@@ -61,7 +95,8 @@ const Login = () => {
             <h1 className="text-5xl font-bold">Login now </h1>
             <form onSubmit={handleLogIn} className="fieldset">
               <label className="label">Email</label>
-              <input required
+              <input
+                required
                 type="email"
                 name="email"
                 className="input"
@@ -69,7 +104,8 @@ const Login = () => {
               />{" "}
               <br />
               <label className="label">Password</label>
-              <input required 
+              <input
+                required
                 type="password"
                 name="password"
                 className="input"
@@ -78,7 +114,16 @@ const Login = () => {
               <div>
                 <a className="link link-hover">Forgot password?</a>
               </div>
-              <button  className="btn btn-success mt-4">Login</button>
+              <button className="btn btn-success mt-4">Login</button>
+              <p className="mt-3 text-center text-sm">
+                Don't have an account?{" "}
+                <Link
+                  to="/register"
+                  className="text-blue-600 font-semibold hover-underlined"
+                >
+                  Sign Up
+                </Link>
+              </p>
             </form>
             <div className="divider">OR</div>
             <div className="flex gap-10">
@@ -95,6 +140,7 @@ const Login = () => {
                 Login With Github
               </button>
             </div>
+            {/* {loading ? "Logged In...." : "Login"} */}
             {user && (
               <div className="mt-5 p-5  flex flex-col items-center gap-3">
                 <img

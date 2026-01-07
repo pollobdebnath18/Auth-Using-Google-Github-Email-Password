@@ -80,7 +80,7 @@ const Register = () => {
           </form>
           {success && (
             <p className="text-green-600 mt-2">
-              Congratulations Registered Successfully
+              Congratulations Registration Successfully
             </p>
           )}
           {errorMessage && (
