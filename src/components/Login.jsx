@@ -55,10 +55,10 @@ const Login = () => {
   };
   return (
     <div>
-      <div className="flex justify-center mt-7">
+      <div className="flex justify-center mt-2">
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <div className="card-body">
-            <h1 className="text-5xl font-bold">Login now!</h1>
+            <h1 className="text-5xl font-bold">Login now </h1>
             <form onSubmit={handleLogIn} className="fieldset">
               <label className="label">Email</label>
               <input required
@@ -78,7 +78,7 @@ const Login = () => {
               <div>
                 <a className="link link-hover">Forgot password?</a>
               </div>
-              <button  className="btn btn-neutral mt-4">Login</button>
+              <button  className="btn btn-success mt-4">Login</button>
             </form>
             <div className="divider">OR</div>
             <div className="flex gap-10">
